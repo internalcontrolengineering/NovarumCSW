@@ -1,0 +1,3808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Control Interno - App de Reportes</title>
+    <style>
+        /* Todos los estilos CSS anteriores se mantienen igual */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #2980b9;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --gray-color: #95a5a6;
+            --light-gray: #f8f9fa;
+            --border-color: #e1e8ed;
+            --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --hover-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            --background-color: #f0f4f8;
+            
+            /* Nuevos colores para diferenciar niveles */
+            --title-color: #1a5276;      /* Azul más oscuro para títulos */
+            --subtitle-color: #2874a6;   /* Azul medio para subtítulos */
+            --theme-color: #3498db;      /* Azul estándar para temas */
+            --activity-color: #5dade2;   /* Azul claro para actividades */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: var(--background-color);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .app-header {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            max-width: 150px;
+            height: auto;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .header-content h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .header-content h1:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .header-content p {
+            opacity: 0.9;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: inline-block;
+            max-width: 600px;
+            margin: 0 auto;
+            color: white; 
+        }
+        
+        .header-content p:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-1px);
+        }
+        
+        .header-subtitle p {
+            font-size: 18px;
+            line-height: 1.5;
+            opacity: 0.9;
+            text-align: center;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s;
+            color: white; 
+        }
+
+        .header-subtitle p:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .app-content {
+            padding: 30px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .card-header {
+            padding: 20px 25px;
+            background: var(--light-gray);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .card-title:hover {
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 12px;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: width 0.3s;
+        }
+        
+        .card-title:hover::after {
+            width: calc(100% - 24px);
+        }
+        
+        .card-content {
+            padding: 25px;
+        }
+        
+        .objective-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #555;
+            padding: 20px;
+            background: linear-gradient(to right, #f8f9fa, #e8f4fd);
+            border-radius: 12px;
+            border-left: 5px solid var(--secondary-color);
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            font-style: italic;
+            color: #6c757d;
+        }
+        
+        .objective-text:hover {
+            background: linear-gradient(to right, #e8f4fd, #d4e9fa);
+            transform: translateX(5px);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .titles-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .title-item {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .title-item:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+        }
+        
+        .title-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--title-color), #2c3e50);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .title-header::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .title-name {
+            font-size: 18px;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .title-content {
+            padding: 20px;
+        }
+        
+        .subtitles-container {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 15px;
+        }
+        
+        .subtitle-item {
+            background: var(--light-gray);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .subtitle-item:hover {
+            border-color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+        
+        .subtitle-header {
+            padding: 18px;
+            background: linear-gradient(135deg, var(--subtitle-color), #3498db);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        
+        .subtitle-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .subtitle-name {
+            font-size: 16px;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .subtitle-content {
+            padding: 18px;
+        }
+        
+        .themes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        
+        .theme-item {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .theme-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--theme-color);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+        
+        .theme-item:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .theme-item:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .theme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .theme-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1565c0;
+            flex: 1;
+        }
+        
+        .theme-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 18px;
+            background: linear-gradient(to right, #f8f9fa, #f1f8ff);
+            border-radius: 10px;
+            border-left: 4px solid var(--theme-color);
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #0d47a1; 
+            white-space: pre-line; /* Esto permite mostrar saltos de línea */
+        }
+        
+        .activities-section {
+            margin-top: 20px;
+        }
+        
+        .activities-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-subtitle {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-subtitle::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: var(--secondary-color);
+            border-radius: 2px;
+        }
+        
+        .activities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .activity-item {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .activity-item:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .activity-header {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            gap: 15px;
+            background: linear-gradient(to right, rgba(91, 173, 226, 0.1), rgba(91, 173, 226, 0.05));
+            border-left: 4px solid var(--activity-color);
+        }
+        
+        .activity-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .activity-text {
+            flex: 1;
+            font-size: 15px;
+            color: #2e7d32;
+        }
+        
+        .activity-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subactivities-container {
+            margin-top: 0;
+            padding: 12px 16px 16px;
+            background: #f8f9fa;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .subactivity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+        
+        .subactivity-item:hover {
+            background: rgba(255,255,255,0.5);
+            border-radius: 5px;
+            padding-left: 5px;
+        }
+        
+        .subactivity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .subactivity-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .subactivity-text {
+            flex: 1;
+            font-size: 14px;
+            color: #ef6c00;  
+        }
+        
+        .add-subactivity-btn {
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: var(--light-gray);
+            border: 1px dashed var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--gray-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        
+        .add-subactivity-btn:hover {
+            background: #e9ecef;
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+        
+        .progress-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(to right, #f8f9fa, #e8f4fd);
+            border-radius: 10px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .progress-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+        
+        .progress-percentage {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--secondary-color);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary-color);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg, 
+                rgba(255, 255, 255, 0.2) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.2) 75%, 
+                transparent 75%, 
+                transparent
+            );
+            background-size: 20px 20px;
+            animation: move 1s linear infinite;
+        }
+        
+        @keyframes move {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 20px 0;
+            }
+        }
+        
+        /* Botones y controles */
+        .btn {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 12px;
+        }
+        
+        .btn-primary {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-color);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gray-color);
+            color: var(--gray-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--gray-color);
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .export-import-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(to right, #f8f9fa, #e8f4fd);
+            border-radius: 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-control {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .textarea-control {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .select-control {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .select-control:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+        
+        .date-control {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: modalAppear 0.3s ease;
+            position: relative;
+        }
+        
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, #f8f9fa, #e8f4fd);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .close {
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray-color);
+            transition: color 0.2s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close:hover {
+            color: var(--primary-color);
+            background: rgba(0,0,0,0.05);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #f8f9fa;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-color);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 120px;
+            transition: all 0.2s;
+        }
+        
+        .status-not-started {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+        
+        .status-definition {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--secondary-color);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+        
+        .status-in-progress {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--warning-color);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+        }
+        
+        .status-review {
+            background: rgba(155, 89, 182, 0.15);
+            color: #9b59b6;
+            border: 1px solid rgba(155, 89, 182, 0.3);
+        }
+        
+        .status-completed {
+            background: rgba(39, 174, 96, 0.15);
+            color: var(--success-color);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+        
+        .status-paused {
+            background: rgba(149, 165, 166, 0.15);
+            color: var(--gray-color);
+            border: 1px solid rgba(149, 165, 166, 0.3);
+        }
+        
+        .add-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* Estilos para la sección de integrantes */
+        .members-section {
+            margin-top: 20px;
+        }
+        
+        .members-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+        }
+        
+        .member-item:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .member-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .member-position {
+            font-size: 14px;
+            color: var(--gray-color);
+        }
+        
+        /* Eliminamos la sección de acciones de miembros */
+        .member-actions {
+            display: none;
+        }
+        
+        /* Estilos para la funcionalidad de arrastrar y soltar */
+        .sortable-ghost {
+            opacity: 0.5;
+            background: #c8ebfb;
+        }
+        
+        .sortable-chosen {
+            background: #e8f4fd;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .sortable-drag {
+            transform: rotate(5deg);
+        }
+        
+        .drag-handle {
+            cursor: grab;
+            margin-right: 10px;
+            color: #95a5a6;
+            font-weight: bold;
+            user-select: none;
+        }
+        
+        .drag-handle:hover {
+            color: #3498db !important;
+        }
+        
+        /* Asegurar que los elementos sean visibles durante el arrastre */
+        .title-item, .subtitle-item, .theme-item, .activity-item, .subactivity-item, .member-item {
+            position: relative;
+        }
+        
+        /* Nuevos estilos para gestión de proyectos */
+        .projects-management {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .project-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .project-select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .project-select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+        
+        /* ============================================= */
+        /* ESTILOS PARA EL ÍNDICE DE ACCESO RÁPIDO */
+        /* ============================================= */
+        
+        .quick-access-index {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            width: 280px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+            z-index: 100;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            cursor: move; /* Para indicar que es arrastrable */
+        }
+        
+        .quick-access-index.collapsed {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .quick-access-index.collapsed .index-header,
+        .quick-access-index.collapsed .index-content {
+            display: none;
+        }
+        
+        .index-header {
+            padding: 15px 20px;
+            background: var(--gradient-secondary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .index-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .index-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        
+        .index-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .index-content {
+            padding: 15px;
+            max-height: calc(80vh - 60px);
+            overflow-y: auto;
+        }
+        
+        .index-section {
+            margin-bottom: 15px;
+        }
+        
+        .index-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .index-section-title i {
+            font-size: 16px;
+            transition: transform 0.3s;
+        }
+        
+        .index-section-title.collapsed i {
+            transform: rotate(-90deg);
+        }
+        
+        .index-list {
+            list-style: none;
+            padding-left: 10px;
+            transition: all 0.3s;
+        }
+        
+        .index-list.collapsed {
+            display: none;
+        }
+        
+        .index-item {
+            margin-bottom: 6px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .index-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+            transform: translateX(3px);
+        }
+        
+        .index-item.active {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--secondary-color);
+            font-weight: 500;
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .index-item i {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .index-item-title {
+            font-weight: 500;
+        }
+        
+        .index-item-subtitle {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-left: 5px;
+        }
+        
+        .index-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            font-size: 11px;
+        }
+        
+        .index-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .index-progress-fill {
+            height: 100%;
+            background: var(--secondary-color);
+            border-radius: 2px;
+        }
+        
+        /* Estilos para identificar niveles en el índice */
+        .index-item-title-level {
+            font-weight: 600;
+            color: var(--title-color);
+        }
+        
+        .index-item-subtitle-level {
+            font-weight: 500;
+            color: var(--subtitle-color);
+        }
+        
+        .index-item-theme-level {
+            font-weight: 400;
+            color: var(--theme-color);
+        }
+        
+        .index-item-activity-level {
+            font-weight: 400;
+            color: var(--activity-color);
+        }
+        
+        /* Indicadores visuales para niveles */
+        .index-item.level-0 {
+            border-left: 3px solid var(--title-color);
+        }
+        
+        .index-item.level-1 {
+            border-left: 3px solid var(--subtitle-color);
+            margin-left: 10px;
+        }
+        
+        .index-item.level-2 {
+            border-left: 3px solid var(--theme-color);
+            margin-left: 20px;
+        }
+        
+        .index-item.level-3 {
+            border-left: 3px solid var(--activity-color);
+            margin-left: 30px;
+        }
+        
+        /* Numeración por niveles */
+        .index-number {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--title-color);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 20px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        
+        .index-number.level-0 {
+            background: var(--title-color);
+        }
+        
+        .index-number.level-1 {
+            background: var(--subtitle-color);
+            width: 18px;
+            height: 18px;
+            font-size: 9px;
+        }
+        
+        .index-number.level-2 {
+            background: var(--theme-color);
+            width: 16px;
+            height: 16px;
+            font-size: 8px;
+        }
+        
+        .index-number.level-3 {
+            background: var(--activity-color);
+            width: 14px;
+            height: 14px;
+            font-size: 7px;
+        }
+        
+        /* Botón de expansión/contracción */
+        .expand-collapse-btn {
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+        
+        .expand-collapse-btn:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .quick-access-index {
+                display: none; /* Ocultar en móviles para no interferir */
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .app-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .theme-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .add-buttons {
+                flex-direction: column;
+            }
+            
+            .export-import-section {
+                flex-direction: column;
+            }
+            
+            .activity-status {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .member-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .projects-management {
+                flex-direction: column;
+            }
+        }
+
+       /* SOLO PARA EL ENCABEZADO - Título y Descripción */
+       .header-content h1.placeholder {
+            color: rgba(255,255,255,0.8) !important;
+            font-style: italic;
+       }
+
+       .header-content p.placeholder {
+            color: rgba(255,255,255,0.8) !important;
+            font-style: italic;
+       }
+
+        /* Estilos para placeholders */
+        .placeholder {
+            color: #6c757d !important;
+            font-style: italic;
+        }
+        /* Placeholder para título de sprints */
+        .card-title.placeholder {
+            color: #6c757d !important;
+            font-style: italic;
+        }
+
+/* Logo de Control Interno - Dorado Elegante (NO cambia con modo oscuro) */
+.logo-control-interno {
+    filter: brightness(0) saturate(100%) invert(77%) sepia(15%) saturate(500%) hue-rotate(350deg) brightness(92%) contrast(85%);
+    max-width: 150px;
+    margin-bottom: 0px;
+}
+
+/* Logo CSW - Se mantiene como está actualmente (sin filtros) */
+.logo-csw {
+    max-width: 150px;
+    margin-top: 10px;
+}
+
+/* Contenedor para el logo de CSW */
+.logo-csw-container {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Ajuste del contenedor principal de logos */
+.logo-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Botón flotante (FAB) pantalla completa */
+.fullscreen-fab{
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(44, 62, 80, 0.75);
+  color: #fff;
+  cursor: pointer;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: transform .2s ease, background .2s ease;
+}
+
+.fullscreen-fab:hover{
+  transform: translateY(-2px);
+  background: rgba(44, 62, 80, 0.9);
+}
+
+.fullscreen-fab:active{
+  transform: translateY(0);
+}
+
+.fullscreen-fab span{
+  font-size: 18px;
+  line-height: 1;
+}
+
+    </style>
+</head>
+<body>
+
+<button id="fullscreenBtn" type="button" class="fullscreen-fab" title="Pantalla completa">
+  <span id="fullscreenIcon">⛶</span>
+</button>
+
+    <!-- Índice de Acceso Rápido -->
+    <div class="quick-access-index" id="quickAccessIndex">
+        <div class="index-header">
+            <div class="index-title">Índice</div>
+            <button class="index-toggle" id="indexToggle">−</button>
+        </div>
+        <div class="index-content" id="indexContent">
+            <!-- El contenido del índice se generará dinámicamente -->
+        </div>
+    </div>
+    
+    <div class="app-container">
+<header class="app-header">
+    <div class="logo-container">
+        <!-- Logo de Control Interno (arriba) - DORADO ELEGANTE -->
+        <img src="https://raw.githubusercontent.com/jpojedawork-ai/Desarrollos/main/Logo%20Control%20Interno.png" 
+             alt="Logo Control Interno" 
+             class="logo logo-control-interno">
+    </div>
+    <div class="header-content">
+        <h1 id="projectTitle" ondblclick="editProjectTitle()" class="placeholder">Plan de Control Interno</h1>
+        <div class="header-subtitle">
+            <p id="projectDescription" ondblclick="editProjectDescription()" class="placeholder">Resumen Ejecutivo</p>
+            <!-- Logo de CSW debajo de Resumen Ejecutivo (se mantiene original) -->
+            <div class="logo-csw-container" style="margin-top: 20px;">
+                <img src="https://raw.githubusercontent.com/jpojedawork-ai/Desarrollos/main/Logo%20CSW.png" 
+                     alt="Logo CSW" 
+                     class="logo logo-csw">
+            </div>
+        </div>
+    </div>
+</header>
+        
+        <div class="app-content">
+            <!-- Gestión de Proyectos -->
+            <div class="projects-management">
+                <button class="btn btn-primary" id="newProjectBtn">
+                    <i>🆕</i> Nuevo Proyecto
+                </button>
+                <div class="project-selector">
+                    <label for="projectSelect">Proyecto actual:</label>
+                    <select class="project-select" id="projectSelect">
+                        <option value="default">Proyecto Principal</option>
+                    </select>
+                </div>
+                <button class="btn btn-outline" id="deleteProjectBtn">
+                    <i>🗑️</i> Eliminar Proyecto
+                </button>
+            </div>
+            
+            <main class="main-content">
+                <!-- Tarjeta de Objetivo -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" id="objectiveTitle" ondblclick="editObjectiveTitle()">Objetivo del Proyecto</h2>
+                    </div>
+                    <div class="card-content">
+                        <p class="objective-text" id="objectiveText" ondblclick="editObjective()">Objetivo</p>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta de Integrantes -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" id="membersTitle">Integrantes del Proyecto</h2>
+                        <button class="btn btn-primary" id="addMemberBtn">
+                            <i>➕</i> Agregar Integrante
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div class="members-section">
+                            <div class="members-list" id="membersList">
+                                <!-- Los integrantes se agregarán aquí dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones de agregar -->
+                <div class="add-buttons">
+                    <button class="btn btn-primary" id="addTitleBtn">
+                        <i>➕</i> Agregar Título
+                    </button>
+                </div>
+                
+                <!-- Tarjeta de Sprints -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" id="sprintsTitle" ondblclick="editSprintsTitle()">Título de Sprints</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="titles-container" id="titlesContainer">
+                            <!-- Los títulos se agregarán aquí dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sección Exportar/Importar -->
+                <div class="export-import-section">
+                    <button class="btn btn-success" id="exportBtn">
+                        <i>📊</i> Exportar Reporte
+                    </button>
+                    <button class="btn btn-primary" id="importBtn">
+                        <i>📁</i> Importar Datos
+                    </button>
+                    <input type="file" id="importFile" class="hidden" accept=".json">
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <div id="titleModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="titleModalTitle">Agregar Título</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre del Título:</label>
+                    <input type="text" class="form-control" id="titleName" placeholder="Ej: Sprints del Proyecto">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelTitleBtn">Cancelar</button>
+                <button class="btn btn-danger" id="deleteTitleBtn" style="display: none;">Eliminar</button>
+                <button class="btn btn-primary" id="saveTitleBtn">Guardar Título</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="subtitleModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="subtitleModalTitle">Agregar Subtítulo</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre del Subtítulo:</label>
+                    <input type="text" class="form-control" id="subtitleName" placeholder="Ej: Documentación Normativa">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelSubtitleBtn">Cancelar</button>
+                <button class="btn btn-danger" id="deleteSubtitleBtn" style="display: none;">Eliminar</button>
+                <button class="btn btn-primary" id="saveSubtitleBtn">Guardar Subtítulo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="themeModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="themeModalTitle">Agregar Tema</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre del Tema:</label>
+                    <input type="text" class="form-control" id="themeName" placeholder="Ej: Manual de Control Interno">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Responsable:</label>
+                    <select class="form-control select-control" id="themeResponsible">
+                        <option value="">Seleccionar responsable</option>
+                        <!-- Las opciones se llenarán dinámicamente con los integrantes -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Entregable:</label>
+                    <!-- CAMBIO: Reemplazar input por textarea para permitir formato y saltos de línea -->
+                    <textarea class="form-control textarea-control" id="themeDeliverable" placeholder="Ej: Documento consolidado"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Plazo:</label>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="continuousDate">
+                        <label for="continuousDate">Continuo</label>
+                    </div>
+                    <div id="dateRange">
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="date" class="form-control date-control" id="themeStartDate" style="flex: 1;">
+                            <span style="display: flex; align-items: center;">al</span>
+                            <input type="date" class="form-control date-control" id="themeEndDate" style="flex: 1;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelThemeBtn">Cancelar</button>
+                <button class="btn btn-danger" id="deleteThemeBtn" style="display: none;">Eliminar</button>
+                <button class="btn btn-primary" id="saveThemeBtn">Guardar Tema</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="activityModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="activityModalTitle">Agregar Actividad</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Descripción de la actividad:</label>
+                    <input type="text" class="form-control" id="activityDescription" placeholder="Ej: Definir objetivos del control interno">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Estado:</label>
+                    <select class="form-control select-control" id="activityStatus">
+                        <option value="No iniciado">No iniciado</option>
+                        <option value="En definición">En definición</option>
+                        <option value="En proceso">En proceso</option>
+                        <option value="En revisión">En revisión</option>
+                        <option value="Concluido">Concluido</option>
+                        <option value="En pausa">En pausa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelActivityBtn">Cancelar</button>
+                <button class="btn btn-danger" id="deleteActivityBtn" style="display: none;">Eliminar</button>
+                <button class="btn btn-primary" id="saveActivityBtn">Guardar Actividad</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="subactivityModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="subactivityModalTitle">Agregar Subactividad</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Descripción de la subactividad:</label>
+                    <input type="text" class="form-control" id="subactivityDescription" placeholder="Ej: Revisar documentación existente">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelSubactivityBtn">Cancelar</button>
+                <button class="btn btn-danger" id="deleteSubactivityBtn" style="display: none;">Eliminar</button>
+                <button class="btn btn-primary" id="saveSubactivityBtn">Guardar Subactividad</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="objectiveModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Objetivo</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Objetivo del Proyecto:</label>
+                    <textarea class="form-control textarea-control" id="objectiveInput" placeholder="Ingrese el objetivo del proyecto"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelObjectiveBtn">Cancelar</button>
+                <button class="btn btn-primary" id="saveObjectiveBtn">Guardar Objetivo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="textModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="textModalTitle">Editar Texto</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" id="textModalLabel">Texto:</label>
+                    <input type="text" class="form-control" id="textInput" placeholder="Ingrese el texto">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelTextBtn">Cancelar</button>
+                <button class="btn btn-primary" id="saveTextBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar integrantes -->
+    <div id="memberModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="memberModalTitle">Agregar Integrante</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" id="memberName" placeholder="Nombre Completo">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Puesto:</label>
+                    <input type="text" class="form-control" id="memberPosition" placeholder="Puesto Nominal">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelMemberBtn">Cancelar</button>
+                <button class="btn btn-danger" id="deleteMemberBtn" style="display: none;">Eliminar</button>
+                <button class="btn btn-primary" id="saveMemberBtn">Guardar Integrante</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para nuevo proyecto -->
+    <div id="newProjectModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Nuevo Proyecto</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre del Proyecto:</label>
+                    <input type="text" class="form-control" id="newProjectName" placeholder="Ingrese el nombre del nuevo proyecto">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Plantilla:</label>
+                    <select class="form-control select-control" id="projectTemplate">
+                        <option value="empty">Proyecto Vacío</option>
+                        <option value="current">Duplicar Proyecto Actual</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelNewProjectBtn">Cancelar</button>
+                <button class="btn btn-primary" id="saveNewProjectBtn">Crear Proyecto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        // Variables globales
+        let projects = {
+            'default': {
+                id: 'default',
+                name: 'Proyecto Principal',
+                description: "",
+                objectiveTitle: "Objetivo del Proyecto",
+                objective: "",
+                sprintsTitle: "",
+                members: [],
+                titles: []
+            }
+        };
+        
+        let currentProjectId = 'default';
+        
+        // Clave para localStorage
+        const STORAGE_KEY = 'planControlInternoProjects';
+        
+        let currentTitleIndex = -1;
+        let currentSubtitleIndex = -1;
+        let currentThemeIndex = -1;
+        let currentActivityIndex = -1;
+        let currentSubactivityIndex = -1;
+        let currentMemberIndex = -1;
+        let isEditing = false;
+        let currentEditType = '';
+        
+        // Mapeo de estados a porcentajes
+        const statusToPercentage = {
+            "No iniciado": 0,
+            "En definición": 25,
+            "En proceso": 50,
+            "En revisión": 75,
+            "Concluido": 100,
+            "En pausa": null
+        };
+        
+        // Elementos DOM
+        const projectTitleElement = document.getElementById('projectTitle');
+        const projectDescriptionElement = document.getElementById('projectDescription');
+        const objectiveTitleElement = document.getElementById('objectiveTitle');
+        const objectiveTextElement = document.getElementById('objectiveText');
+        const sprintsTitleElement = document.getElementById('sprintsTitle');
+        const addTitleBtn = document.getElementById('addTitleBtn');
+        const titlesContainer = document.getElementById('titlesContainer');
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const importFile = document.getElementById('importFile');
+        const projectSelect = document.getElementById('projectSelect');
+        const newProjectBtn = document.getElementById('newProjectBtn');
+        const deleteProjectBtn = document.getElementById('deleteProjectBtn');
+        
+        // Elementos para integrantes
+        const addMemberBtn = document.getElementById('addMemberBtn');
+        const membersList = document.getElementById('membersList');
+        
+        // Elementos para el índice de acceso rápido
+        const quickAccessIndex = document.getElementById('quickAccessIndex');
+        const indexToggle = document.getElementById('indexToggle');
+        const indexContent = document.getElementById('indexContent');
+        
+        // Variables para funcionalidad de arrastre del índice
+        let isDraggingIndex = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        
+        // Modales
+        const titleModal = document.getElementById('titleModal');
+        const subtitleModal = document.getElementById('subtitleModal');
+        const themeModal = document.getElementById('themeModal');
+        const activityModal = document.getElementById('activityModal');
+        const subactivityModal = document.getElementById('subactivityModal');
+        const objectiveModal = document.getElementById('objectiveModal');
+        const textModal = document.getElementById('textModal');
+        const memberModal = document.getElementById('memberModal');
+        const newProjectModal = document.getElementById('newProjectModal');
+        
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            updateProjectSelector();
+            renderTitles();
+            renderMembers();
+            setupEventListeners();
+            updatePlaceholders();
+            // Inicializar arrastrar y soltar después de un pequeño retraso para asegurar que el DOM esté listo
+            setTimeout(initializeDragAndDrop, 100);
+            // Inicializar el índice de acceso rápido
+            initializeQuickAccessIndex();
+            // Inicializar funcionalidad de arrastre del índice
+            initializeIndexDragging();
+        });
+        
+        // =============================================
+        // FUNCIONALIDAD DEL ÍNDICE DE ACCESO RÁPIDO
+        // =============================================
+        
+        function initializeQuickAccessIndex() {
+            // Configurar el botón de toggle
+            indexToggle.addEventListener('click', toggleQuickAccessIndex);
+            
+            // Configurar doble clic en el índice para maximizar/minimizar
+            quickAccessIndex.addEventListener('dblclick', toggleQuickAccessIndex);
+            
+            // Generar el contenido inicial del índice
+            updateQuickAccessIndex();
+        }
+        
+        function toggleQuickAccessIndex() {
+            quickAccessIndex.classList.toggle('collapsed');
+            indexToggle.textContent = quickAccessIndex.classList.contains('collapsed') ? '+' : '−';
+        }
+        
+        // =============================================
+        // FUNCIONALIDAD DE ARRASTRE DEL ÍNDICE
+        // =============================================
+        
+        function initializeIndexDragging() {
+            const indexHeader = document.querySelector('.index-header');
+            
+            indexHeader.addEventListener('mousedown', startDragging);
+            document.addEventListener('mousemove', dragIndex);
+            document.addEventListener('mouseup', stopDragging);
+            
+            // Para dispositivos táctiles
+            indexHeader.addEventListener('touchstart', startDraggingTouch);
+            document.addEventListener('touchmove', dragIndexTouch);
+            document.addEventListener('touchend', stopDragging);
+        }
+        
+        function startDragging(e) {
+            isDraggingIndex = true;
+            const rect = quickAccessIndex.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            quickAccessIndex.style.cursor = 'grabbing';
+        }
+        
+        function startDraggingTouch(e) {
+            isDraggingIndex = true;
+            const touch = e.touches[0];
+            const rect = quickAccessIndex.getBoundingClientRect();
+            dragOffsetX = touch.clientX - rect.left;
+            dragOffsetY = touch.clientY - rect.top;
+            quickAccessIndex.style.cursor = 'grabbing';
+        }
+        
+        function dragIndex(e) {
+            if (!isDraggingIndex) return;
+            
+            e.preventDefault();
+            
+            let x = e.clientX - dragOffsetX;
+            let y = e.clientY - dragOffsetY;
+            
+            // Limitar el movimiento dentro de la ventana
+            const maxX = window.innerWidth - quickAccessIndex.offsetWidth;
+            const maxY = window.innerHeight - quickAccessIndex.offsetHeight;
+            
+            x = Math.max(0, Math.min(x, maxX));
+            y = Math.max(0, Math.min(y, maxY));
+            
+            quickAccessIndex.style.left = x + 'px';
+            quickAccessIndex.style.top = y + 'px';
+            quickAccessIndex.style.right = 'auto';
+            quickAccessIndex.style.transform = 'none';
+        }
+        
+        function dragIndexTouch(e) {
+            if (!isDraggingIndex) return;
+            
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            let x = touch.clientX - dragOffsetX;
+            let y = touch.clientY - dragOffsetY;
+            
+            // Limitar el movimiento dentro de la ventana
+            const maxX = window.innerWidth - quickAccessIndex.offsetWidth;
+            const maxY = window.innerHeight - quickAccessIndex.offsetHeight;
+            
+            x = Math.max(0, Math.min(x, maxX));
+            y = Math.max(0, Math.min(y, maxY));
+            
+            quickAccessIndex.style.left = x + 'px';
+            quickAccessIndex.style.top = y + 'px';
+            quickAccessIndex.style.right = 'auto';
+            quickAccessIndex.style.transform = 'none';
+        }
+        
+        function stopDragging() {
+            isDraggingIndex = false;
+            quickAccessIndex.style.cursor = 'move';
+        }
+        
+        // =============================================
+        // FUNCIONALIDAD DE EXPANSIÓN/CONTRACCIÓN DEL ÍNDICE
+        // =============================================
+        
+        function updateQuickAccessIndex() {
+            const project = getCurrentProject();
+            let indexHTML = '';
+            
+            // Sección de información general
+            indexHTML += `
+                <div class="index-section">
+                    <div class="index-section-title" onclick="toggleSection(this)">
+                        <i>📋</i> Información General
+                        <button class="expand-collapse-btn">−</button>
+                    </div>
+                    <ul class="index-list">
+                        <li class="index-item level-0" onclick="scrollToElement('projectTitle')">
+                            <span class="index-number level-0">1</span>
+                            <div>
+                                <div class="index-item-title index-item-title-level">Proyecto</div>
+                                <div class="index-item-subtitle">${project.name || 'Sin nombre'}</div>
+                            </div>
+                        </li>
+                        <li class="index-item level-0" onclick="scrollToElement('objectiveTitle')">
+                            <span class="index-number level-0">2</span>
+                            <div>
+                                <div class="index-item-title index-item-title-level">Objetivo</div>
+                                <div class="index-item-subtitle">${project.objective ? project.objective.substring(0, 30) + '...' : 'Sin definir'}</div>
+                            </div>
+                        </li>
+                        <li class="index-item level-0" onclick="scrollToElement('membersTitle')">
+                            <span class="index-number level-0">3</span>
+                            <div>
+                                <div class="index-item-title index-item-title-level">Integrantes</div>
+                                <div class="index-item-subtitle">${project.members.length} miembros</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            `;
+            
+            // Sección de títulos/sprints
+            if (project.titles && project.titles.length > 0) {
+                indexHTML += `
+                    <div class="index-section">
+                        <div class="index-section-title" onclick="toggleSection(this)">
+                            <i>📚</i> ${project.sprintsTitle || 'Sprints'}
+                            <button class="expand-collapse-btn">−</button>
+                        </div>
+                        <ul class="index-list">
+                `;
+                
+                let titleCounter = 1;
+                project.titles.forEach((title, titleIndex) => {
+                    const titleProgress = calculateTitleProgress(title);
+                    let subtitleCounter = 1;
+                    
+                    indexHTML += `
+                        <li class="index-item level-0" onclick="scrollToTitle(${titleIndex})">
+                            <span class="index-number level-0">${titleCounter}</span>
+                            <div style="flex: 1;">
+                                <div class="index-item-title index-item-title-level">${title.name}</div>
+                                <div class="index-progress">
+                                    <div class="index-progress-bar">
+                                        <div class="index-progress-fill" style="width: ${titleProgress}%"></div>
+                                    </div>
+                                    <span>${titleProgress}%</span>
+                                </div>
+                            </div>
+                            <button class="expand-collapse-btn" onclick="event.stopPropagation(); toggleTitleInIndex(${titleIndex})">−</button>
+                        </li>
+                        <div id="index-title-${titleIndex}">
+                    `;
+                    
+                    // Subtítulos
+                    if (title.subtitles && title.subtitles.length > 0) {
+                        title.subtitles.forEach((subtitle, subtitleIndex) => {
+                            const subtitleProgress = calculateSubtitleProgress(subtitle);
+                            let themeCounter = 1;
+                            
+                            indexHTML += `
+                                <li class="index-item level-1" onclick="scrollToSubtitle(${titleIndex}, ${subtitleIndex})">
+                                    <span class="index-number level-1">${titleCounter}.${subtitleCounter}</span>
+                                    <div style="flex: 1;">
+                                        <div class="index-item-title index-item-subtitle-level">${subtitle.name}</div>
+                                        <div class="index-progress">
+                                            <div class="index-progress-bar">
+                                                <div class="index-progress-fill" style="width: ${subtitleProgress}%"></div>
+                                            </div>
+                                            <span>${subtitleProgress}%</span>
+                                        </div>
+                                    </div>
+                                    <button class="expand-collapse-btn" onclick="event.stopPropagation(); toggleSubtitleInIndex(${titleIndex}, ${subtitleIndex})">−</button>
+                                </li>
+                                <div id="index-subtitle-${titleIndex}-${subtitleIndex}">
+                            `;
+                            
+                            // Temas
+                            if (subtitle.themes && subtitle.themes.length > 0) {
+                                subtitle.themes.forEach((theme, themeIndex) => {
+                                    const themeProgress = calculateThemeProgress(theme.activities);
+                                    
+                                    indexHTML += `
+                                        <li class="index-item level-2" onclick="scrollToTheme(${titleIndex}, ${subtitleIndex}, ${themeIndex})">
+                                            <span class="index-number level-2">${titleCounter}.${subtitleCounter}.${themeCounter}</span>
+                                            <div style="flex: 1;">
+                                                <div class="index-item-title index-item-theme-level">${theme.name}</div>
+                                                <div class="index-progress">
+                                                    <div class="index-progress-bar">
+                                                        <div class="index-progress-fill" style="width: ${themeProgress}%"></div>
+                                                    </div>
+                                                    <span>${themeProgress}%</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    `;
+                                    themeCounter++;
+                                });
+                            }
+                            
+                            indexHTML += `</div>`; // Cierre del div de subtítulo
+                            subtitleCounter++;
+                        });
+                    }
+                    
+                    indexHTML += `</div>`; // Cierre del div de título
+                    titleCounter++;
+                });
+                
+                indexHTML += `
+                        </ul>
+                    </div>
+                `;
+            } else {
+                indexHTML += `
+                    <div class="index-section">
+                        <div class="index-section-title">
+                            <i>📚</i> ${project.sprintsTitle || 'Sprints'}
+                        </div>
+                        <div class="index-item">
+                            <i>ℹ️</i>
+                            <div class="index-item-title">No hay títulos definidos</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            indexContent.innerHTML = indexHTML;
+        }
+        
+        function toggleSection(sectionTitle) {
+            const sectionList = sectionTitle.nextElementSibling;
+            const button = sectionTitle.querySelector('.expand-collapse-btn');
+            
+            sectionTitle.classList.toggle('collapsed');
+            sectionList.classList.toggle('collapsed');
+            button.textContent = sectionTitle.classList.contains('collapsed') ? '+' : '−';
+        }
+        
+        function toggleTitleInIndex(titleIndex) {
+            const titleContainer = document.getElementById(`index-title-${titleIndex}`);
+            const button = event.target;
+            
+            if (titleContainer.style.display === 'none') {
+                titleContainer.style.display = 'block';
+                button.textContent = '−';
+            } else {
+                titleContainer.style.display = 'none';
+                button.textContent = '+';
+            }
+        }
+        
+        function toggleSubtitleInIndex(titleIndex, subtitleIndex) {
+            const subtitleContainer = document.getElementById(`index-subtitle-${titleIndex}-${subtitleIndex}`);
+            const button = event.target;
+            
+            if (subtitleContainer.style.display === 'none') {
+                subtitleContainer.style.display = 'block';
+                button.textContent = '−';
+            } else {
+                subtitleContainer.style.display = 'none';
+                button.textContent = '+';
+            }
+        }
+        
+        function calculateTitleProgress(title) {
+            if (!title.subtitles || title.subtitles.length === 0) return 0;
+            
+            let totalProgress = 0;
+            let subtitlesWithProgress = 0;
+            
+            title.subtitles.forEach(subtitle => {
+                const subtitleProgress = calculateSubtitleProgress(subtitle);
+                if (subtitleProgress > 0) {
+                    totalProgress += subtitleProgress;
+                    subtitlesWithProgress++;
+                }
+            });
+            
+            return subtitlesWithProgress > 0 ? Math.round(totalProgress / subtitlesWithProgress) : 0;
+        }
+        
+        function calculateSubtitleProgress(subtitle) {
+            if (!subtitle.themes || subtitle.themes.length === 0) return 0;
+            
+            let totalProgress = 0;
+            let themesWithProgress = 0;
+            
+            subtitle.themes.forEach(theme => {
+                const themeProgress = calculateThemeProgress(theme.activities);
+                if (themeProgress > 0) {
+                    totalProgress += themeProgress;
+                    themesWithProgress++;
+                }
+            });
+            
+            return themesWithProgress > 0 ? Math.round(totalProgress / themesWithProgress) : 0;
+        }
+        
+        function scrollToElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Destacar el elemento
+                element.style.transition = 'all 0.3s';
+                element.style.boxShadow = '0 0 0 3px rgba(52, 152, 219, 0.5)';
+                setTimeout(() => {
+                    element.style.boxShadow = '';
+                }, 1500);
+            }
+        }
+        
+        function scrollToTitle(titleIndex) {
+            const titleElements = document.querySelectorAll('.title-item');
+            if (titleElements[titleIndex]) {
+                titleElements[titleIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Destacar el título
+                titleElements[titleIndex].style.transition = 'all 0.3s';
+                titleElements[titleIndex].style.boxShadow = '0 0 0 3px rgba(52, 152, 219, 0.5)';
+                setTimeout(() => {
+                    titleElements[titleIndex].style.boxShadow = '';
+                }, 1500);
+            }
+        }
+        
+        function scrollToSubtitle(titleIndex, subtitleIndex) {
+            const subtitleElements = document.querySelectorAll(`#subtitles-${titleIndex} .subtitle-item`);
+            if (subtitleElements[subtitleIndex]) {
+                subtitleElements[subtitleIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Destacar el subtítulo
+                subtitleElements[subtitleIndex].style.transition = 'all 0.3s';
+                subtitleElements[subtitleIndex].style.boxShadow = '0 0 0 3px rgba(52, 152, 219, 0.5)';
+                setTimeout(() => {
+                    subtitleElements[subtitleIndex].style.boxShadow = '';
+                }, 1500);
+            }
+        }
+        
+        function scrollToTheme(titleIndex, subtitleIndex, themeIndex) {
+            const themeElements = document.querySelectorAll(`#themes-${titleIndex}-${subtitleIndex} .theme-item`);
+            if (themeElements[themeIndex]) {
+                themeElements[themeIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Destacar el tema
+                themeElements[themeIndex].style.transition = 'all 0.3s';
+                themeElements[themeIndex].style.boxShadow = '0 0 0 3px rgba(52, 152, 219, 0.5)';
+                setTimeout(() => {
+                    themeElements[themeIndex].style.boxShadow = '';
+                }, 1500);
+            }
+        }
+        
+        // =============================================
+        // FUNCIONES EXISTENTES (se mantienen igual)
+        // =============================================
+        
+        // Función para obtener el proyecto actual
+        function getCurrentProject() {
+            return projects[currentProjectId];
+        }
+        
+        // Función para cargar datos desde localStorage
+        function loadData() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    if (parsedData.projects) {
+                        projects = parsedData.projects;
+                    }
+                    if (parsedData.currentProjectId) {
+                        currentProjectId = parsedData.currentProjectId;
+                    }
+                    updateUIFromData();
+                } catch (error) {
+                    console.error('Error al cargar datos guardados:', error);
+                }
+            }
+        }
+        
+        // Función para guardar datos en localStorage
+        function saveData() {
+            try {
+                const dataToSave = {
+                    projects: projects,
+                    currentProjectId: currentProjectId
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+                // Actualizar el índice después de guardar
+                updateQuickAccessIndex();
+            } catch (error) {
+                console.error('Error al guardar datos:', error);
+            }
+        }
+        
+        // Función para actualizar placeholders
+        function updatePlaceholders() {
+            const project = getCurrentProject();
+            
+            // Título del proyecto
+            if (!project.name) {
+                projectTitleElement.textContent = "Título del Proyecto";
+                projectTitleElement.classList.add('placeholder');
+            } else {
+                projectTitleElement.textContent = project.name;
+                projectTitleElement.classList.remove('placeholder');
+            }
+            
+            // Descripción del proyecto
+            if (!project.description) {
+                projectDescriptionElement.textContent = "Descripción del proyecto";
+                projectDescriptionElement.classList.add('placeholder');
+            } else {
+                projectDescriptionElement.textContent = project.description;
+                projectDescriptionElement.classList.remove('placeholder');
+            }
+            
+            // Objetivo
+            if (!project.objective) {
+                objectiveTextElement.textContent = "Objetivo";
+                objectiveTextElement.classList.add('placeholder');
+            } else {
+                objectiveTextElement.textContent = project.objective;
+                objectiveTextElement.classList.remove('placeholder');
+            }
+            
+            // Título de Sprints
+            if (!project.sprintsTitle) {
+                sprintsTitleElement.textContent = "Título de Sprints";
+                sprintsTitleElement.classList.add('placeholder');
+            } else {
+               sprintsTitleElement.textContent = project.sprintsTitle;
+               sprintsTitleElement.classList.remove('placeholder');
+            }
+        }
+        
+        function setupEventListeners() {
+            // Botones de agregar
+            addTitleBtn.addEventListener('click', () => {
+                openAddTitleModal();
+            });
+            
+            addMemberBtn.addEventListener('click', () => {
+                openAddMemberModal();
+            });
+            
+            // Exportar/Importar
+            exportBtn.addEventListener('click', exportData);
+            importBtn.addEventListener('click', () => importFile.click());
+            importFile.addEventListener('change', handleImport);
+            
+            // Gestión de proyectos
+            newProjectBtn.addEventListener('click', openNewProjectModal);
+            deleteProjectBtn.addEventListener('click', deleteCurrentProject);
+            projectSelect.addEventListener('change', switchProject);
+            
+            // Modales
+            setupModalEvents();
+            
+            // Checkbox para fecha continua
+            document.getElementById('continuousDate').addEventListener('change', function() {
+                const dateRange = document.getElementById('dateRange');
+                if (this.checked) {
+                    dateRange.style.display = 'none';
+                } else {
+                    dateRange.style.display = 'block';
+                }
+            });
+        }
+        
+        function openNewProjectModal() {
+            document.getElementById('newProjectName').value = '';
+            document.getElementById('projectTemplate').value = 'current';
+            openModal(newProjectModal);
+        }
+        
+        function createNewProject() {
+            const projectName = document.getElementById('newProjectName').value;
+            const template = document.getElementById('projectTemplate').value;
+            
+            if (!projectName.trim()) {
+                alert('Por favor, ingrese un nombre para el proyecto');
+                return;
+            }
+            
+            const projectId = 'project_' + Date.now();
+            
+            if (template === 'empty') {
+                projects[projectId] = {
+                    id: projectId,
+                    name: projectName,
+                    description: "",
+                    objectiveTitle: "Objetivo del Proyecto",
+                    objective: "",
+                    sprintsTitle: "",
+                    members: [],
+                    titles: []
+                };
+            } else {
+                // Duplicar proyecto actual
+                const currentProject = getCurrentProject();
+                projects[projectId] = JSON.parse(JSON.stringify(currentProject));
+                projects[projectId].id = projectId;
+                projects[projectId].name = projectName;
+            }
+            
+            // Agregar al selector
+            const option = document.createElement('option');
+            option.value = projectId;
+            option.textContent = projectName;
+            projectSelect.appendChild(option);
+            
+            // Cambiar al nuevo proyecto
+            projectSelect.value = projectId;
+            switchProject();
+            
+            closeModal(newProjectModal);
+            saveData();
+        }
+        
+        function switchProject() {
+            currentProjectId = projectSelect.value;
+            updateUIFromData();
+            renderTitles();
+            renderMembers();
+            updatePlaceholders();
+            setTimeout(initializeDragAndDrop, 100);
+            updateQuickAccessIndex();
+        }
+        
+        function deleteCurrentProject() {
+            if (Object.keys(projects).length <= 1) {
+                alert('No puede eliminar el único proyecto existente');
+                return;
+            }
+            
+            if (confirm(`¿Está seguro de que desea eliminar el proyecto "${getCurrentProject().name}"?`)) {
+                delete projects[currentProjectId];
+                
+                // Eliminar del selector
+                const optionToRemove = projectSelect.querySelector(`option[value="${currentProjectId}"]`);
+                if (optionToRemove) {
+                    optionToRemove.remove();
+                }
+                
+                // Cambiar a otro proyecto
+                const remainingProjectId = Object.keys(projects)[0];
+                projectSelect.value = remainingProjectId;
+                switchProject();
+                
+                saveData();
+            }
+        }
+        
+        function updateProjectSelector() {
+            projectSelect.innerHTML = '';
+            
+            Object.values(projects).forEach(project => {
+                const option = document.createElement('option');
+                option.value = project.id;
+                option.textContent = project.name;
+                if (project.id === currentProjectId) {
+                    option.selected = true;
+                }
+                projectSelect.appendChild(option);
+            });
+        }
+        
+        function openAddMemberModal() {
+            isEditing = false;
+            currentMemberIndex = -1;
+            document.getElementById('memberModalTitle').textContent = "Agregar Integrante";
+            document.getElementById('memberName').value = "";
+            document.getElementById('memberPosition').value = "";
+            document.getElementById('deleteMemberBtn').style.display = 'none';
+            openModal(memberModal);
+        }
+        
+        function saveMember() {
+            const memberName = document.getElementById('memberName').value;
+            const memberPosition = document.getElementById('memberPosition').value;
+            const project = getCurrentProject();
+            
+            if (memberName.trim() === '' || memberPosition.trim() === '') {
+                alert('Por favor, ingrese nombre y puesto del integrante');
+                return;
+            }
+            
+            if (isEditing) {
+                project.members[currentMemberIndex].name = memberName;
+                project.members[currentMemberIndex].position = memberPosition;
+            } else {
+                const newMember = {
+                    name: memberName,
+                    position: memberPosition
+                };
+                project.members.push(newMember);
+            }
+            
+            renderMembers();
+            saveData();
+            closeModal(memberModal);
+        }
+        
+        function deleteCurrentMember() {
+            if (confirm('¿Está seguro de que desea eliminar este integrante?')) {
+                const project = getCurrentProject();
+                project.members.splice(currentMemberIndex, 1);
+                renderMembers();
+                saveData();
+                closeModal(memberModal);
+            }
+        }
+        
+        function editMember(memberIndex) {
+            isEditing = true;
+            currentMemberIndex = memberIndex;
+            const project = getCurrentProject();
+            document.getElementById('memberModalTitle').textContent = "Editar Integrante";
+            document.getElementById('memberName').value = project.members[memberIndex].name;
+            document.getElementById('memberPosition').value = project.members[memberIndex].position;
+            document.getElementById('deleteMemberBtn').style.display = 'inline-block';
+            openModal(memberModal);
+        }
+        
+        function renderMembers() {
+            const project = getCurrentProject();
+            membersList.innerHTML = '';
+            
+            if (project.members.length === 0) {
+                membersList.innerHTML = `
+                    <div class="empty-state">
+                        <p>No se han agregado integrantes aún.</p>
+                        <p>Use el botón "Agregar Integrante" para comenzar.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            project.members.forEach((member, memberIndex) => {
+                const memberElement = document.createElement('div');
+                memberElement.className = 'member-item';
+                
+                memberElement.ondblclick = () => editMember(memberIndex);
+                
+                memberElement.innerHTML = `
+                    <div class="member-info">
+                        <div class="member-name">${member.name}</div>
+                        <div class="member-position">${member.position}</div>
+                    </div>
+                `;
+                
+                membersList.appendChild(memberElement);
+            });
+            
+            updateResponsibleDropdown();
+        }
+        
+        function updateResponsibleDropdown() {
+            const responsibleSelect = document.getElementById('themeResponsible');
+            const project = getCurrentProject();
+            
+            const currentValue = responsibleSelect.value;
+            
+            while (responsibleSelect.options.length > 1) {
+                responsibleSelect.remove(1);
+            }
+            
+            project.members.forEach(member => {
+                const option = document.createElement('option');
+                option.value = member.name;
+                option.textContent = `${member.name} - ${member.position}`;
+                responsibleSelect.appendChild(option);
+            });
+            
+            if (currentValue && Array.from(responsibleSelect.options).some(opt => opt.value === currentValue)) {
+                responsibleSelect.value = currentValue;
+            }
+        }
+        
+        // NUEVA FUNCIÓN: Obtener el puesto del responsable por su nombre
+        function getPositionByName(memberName) {
+            const project = getCurrentProject();
+            const member = project.members.find(m => m.name === memberName);
+            return member ? member.position : '';
+        }
+        
+        function openAddTitleModal() {
+            isEditing = false;
+            currentTitleIndex = -1;
+            document.getElementById('titleModalTitle').textContent = "Agregar Título";
+            document.getElementById('titleName').value = "";
+            document.getElementById('deleteTitleBtn').style.display = 'none';
+            openModal(titleModal);
+        }
+        
+        function openAddSubtitleModal(titleIndex) {
+            isEditing = false;
+            currentTitleIndex = titleIndex;
+            currentSubtitleIndex = -1;
+            document.getElementById('subtitleModalTitle').textContent = "Agregar Subtítulo";
+            document.getElementById('subtitleName').value = "";
+            document.getElementById('deleteSubtitleBtn').style.display = 'none';
+            openModal(subtitleModal);
+        }
+        
+        function openAddThemeModal(titleIndex, subtitleIndex) {
+            isEditing = false;
+            currentTitleIndex = titleIndex;
+            currentSubtitleIndex = subtitleIndex;
+            currentThemeIndex = -1;
+            document.getElementById('themeModalTitle').textContent = "Agregar Tema";
+            document.getElementById('themeName').value = "";
+            document.getElementById('themeResponsible').value = "";
+            document.getElementById('themeDeliverable').value = "";
+            document.getElementById('themeStartDate').value = "";
+            document.getElementById('themeEndDate').value = "";
+            document.getElementById('continuousDate').checked = false;
+            document.getElementById('dateRange').style.display = 'block';
+            document.getElementById('deleteThemeBtn').style.display = 'none';
+            
+            updateResponsibleDropdown();
+            
+            openModal(themeModal);
+        }
+        
+        function openAddActivityModal(titleIndex, subtitleIndex, themeIndex) {
+            isEditing = false;
+            currentTitleIndex = titleIndex;
+            currentSubtitleIndex = subtitleIndex;
+            currentThemeIndex = themeIndex;
+            currentActivityIndex = -1;
+            document.getElementById('activityModalTitle').textContent = "Agregar Actividad";
+            document.getElementById('activityDescription').value = "";
+            document.getElementById('activityStatus').value = "No iniciado";
+            document.getElementById('deleteActivityBtn').style.display = 'none';
+            openModal(activityModal);
+        }
+        
+        function openAddSubactivityModal(titleIndex, subtitleIndex, themeIndex, activityIndex) {
+            isEditing = false;
+            currentTitleIndex = titleIndex;
+            currentSubtitleIndex = subtitleIndex;
+            currentThemeIndex = themeIndex;
+            currentActivityIndex = activityIndex;
+            currentSubactivityIndex = -1;
+            document.getElementById('subactivityModalTitle').textContent = "Agregar Subactividad";
+            document.getElementById('subactivityDescription').value = "";
+            document.getElementById('deleteSubactivityBtn').style.display = 'none';
+            openModal(subactivityModal);
+        }
+        
+        function editProjectTitle() {
+            currentEditType = 'projectTitle';
+            const project = getCurrentProject();
+            document.getElementById('textModalTitle').textContent = "Editar Título del Proyecto";
+            document.getElementById('textModalLabel').textContent = "Título del Proyecto:";
+            document.getElementById('textInput').value = project.name || "";
+            openModal(textModal);
+        }
+        
+        function editProjectDescription() {
+            currentEditType = 'projectDescription';
+            const project = getCurrentProject();
+            document.getElementById('textModalTitle').textContent = "Editar Descripción del Proyecto";
+            document.getElementById('textModalLabel').textContent = "Descripción del Proyecto:";
+            document.getElementById('textInput').value = project.description || "";
+            openModal(textModal);
+        }
+        
+        function editObjectiveTitle() {
+            currentEditType = 'objectiveTitle';
+            const project = getCurrentProject();
+            document.getElementById('textModalTitle').textContent = "Editar Título del Objetivo";
+            document.getElementById('textModalLabel').textContent = "Título del Objetivo:";
+            document.getElementById('textInput').value = project.objectiveTitle;
+            openModal(textModal);
+        }
+        
+        function editObjective() {
+            const project = getCurrentProject();
+            document.getElementById('objectiveInput').value = project.objective || "";
+            openModal(objectiveModal);
+        }
+        
+        function editSprintsTitle() {
+            currentEditType = 'sprintsTitle';
+            const project = getCurrentProject();
+            document.getElementById('textModalTitle').textContent = "Editar Título de Sprints";
+            document.getElementById('textModalLabel').textContent = "Título de Sprints:";
+            document.getElementById('textInput').value = project.sprintsTitle;
+            openModal(textModal);
+        }
+        
+        function setupModalEvents() {
+            // Título
+            document.getElementById('saveTitleBtn').addEventListener('click', saveTitle);
+            document.getElementById('cancelTitleBtn').addEventListener('click', () => closeModal(titleModal));
+            document.getElementById('deleteTitleBtn').addEventListener('click', deleteCurrentTitle);
+            
+            // Subtítulo
+            document.getElementById('saveSubtitleBtn').addEventListener('click', saveSubtitle);
+            document.getElementById('cancelSubtitleBtn').addEventListener('click', () => closeModal(subtitleModal));
+            document.getElementById('deleteSubtitleBtn').addEventListener('click', deleteCurrentSubtitle);
+            
+            // Tema
+            document.getElementById('saveThemeBtn').addEventListener('click', saveTheme);
+            document.getElementById('cancelThemeBtn').addEventListener('click', () => closeModal(themeModal));
+            document.getElementById('deleteThemeBtn').addEventListener('click', deleteCurrentTheme);
+            
+            // Actividad
+            document.getElementById('saveActivityBtn').addEventListener('click', saveActivity);
+            document.getElementById('cancelActivityBtn').addEventListener('click', () => closeModal(activityModal));
+            document.getElementById('deleteActivityBtn').addEventListener('click', deleteCurrentActivity);
+            
+            // Subactividad
+            document.getElementById('saveSubactivityBtn').addEventListener('click', saveSubactivity);
+            document.getElementById('cancelSubactivityBtn').addEventListener('click', () => closeModal(subactivityModal));
+            document.getElementById('deleteSubactivityBtn').addEventListener('click', deleteCurrentSubactivity);
+            
+            // Objetivo
+            document.getElementById('saveObjectiveBtn').addEventListener('click', saveObjective);
+            document.getElementById('cancelObjectiveBtn').addEventListener('click', () => closeModal(objectiveModal));
+            
+            // Texto general
+            document.getElementById('saveTextBtn').addEventListener('click', saveText);
+            document.getElementById('cancelTextBtn').addEventListener('click', () => closeModal(textModal));
+            
+            // Integrantes
+            document.getElementById('saveMemberBtn').addEventListener('click', saveMember);
+            document.getElementById('cancelMemberBtn').addEventListener('click', () => closeModal(memberModal));
+            document.getElementById('deleteMemberBtn').addEventListener('click', deleteCurrentMember);
+            
+            // Nuevo proyecto
+            document.getElementById('saveNewProjectBtn').addEventListener('click', createNewProject);
+            document.getElementById('cancelNewProjectBtn').addEventListener('click', () => closeModal(newProjectModal));
+            
+            // Cerrar modales
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+            
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    closeModal(e.target);
+                }
+            });
+        }
+        
+        function saveTitle() {
+            const titleName = document.getElementById('titleName').value;
+            const project = getCurrentProject();
+            
+            if (titleName.trim() === '') {
+                alert('Por favor, ingrese un nombre para el título');
+                return;
+            }
+            
+            if (isEditing) {
+                project.titles[currentTitleIndex].name = titleName;
+            } else {
+                const newTitle = {
+                    name: titleName,
+                    subtitles: []
+                };
+                project.titles.push(newTitle);
+            }
+            
+            renderTitles();
+            saveData();
+            closeModal(titleModal);
+        }
+        
+        function saveSubtitle() {
+            const subtitleName = document.getElementById('subtitleName').value;
+            const project = getCurrentProject();
+            
+            if (subtitleName.trim() === '') {
+                alert('Por favor, ingrese un nombre para el subtítulo');
+                return;
+            }
+            
+            if (isEditing) {
+                project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].name = subtitleName;
+            } else {
+                const newSubtitle = {
+                    name: subtitleName,
+                    themes: []
+                };
+                project.titles[currentTitleIndex].subtitles.push(newSubtitle);
+            }
+            
+            renderTitles();
+            saveData();
+            closeModal(subtitleModal);
+        }
+        
+        function saveTheme() {
+            const themeName = document.getElementById('themeName').value;
+            const themeResponsible = document.getElementById('themeResponsible').value;
+            const themeDeliverable = document.getElementById('themeDeliverable').value;
+            const continuous = document.getElementById('continuousDate').checked;
+            const themeStartDate = continuous ? "" : document.getElementById('themeStartDate').value;
+            const themeEndDate = continuous ? "" : document.getElementById('themeEndDate').value;
+            const project = getCurrentProject();
+            
+            if (themeName.trim() === '') {
+                alert('Por favor, ingrese un nombre para el tema');
+                return;
+            }
+            
+            if (isEditing) {
+                const theme = project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes[currentThemeIndex];
+                theme.name = themeName;
+                theme.responsible = themeResponsible;
+                theme.deliverable = themeDeliverable;
+                theme.startDate = themeStartDate;
+                theme.endDate = themeEndDate;
+                theme.continuous = continuous;
+            } else {
+                const newTheme = {
+                    name: themeName,
+                    responsible: themeResponsible,
+                    deliverable: themeDeliverable,
+                    startDate: themeStartDate,
+                    endDate: themeEndDate,
+                    continuous: continuous,
+                    activities: []
+                };
+                project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes.push(newTheme);
+            }
+            
+            renderTitles();
+            saveData();
+            closeModal(themeModal);
+        }
+        
+        function saveActivity() {
+            const activityDescription = document.getElementById('activityDescription').value;
+            const activityStatus = document.getElementById('activityStatus').value;
+            const project = getCurrentProject();
+            
+            if (activityDescription.trim() === '') {
+                alert('Por favor, ingrese una descripción para la actividad');
+                return;
+            }
+            
+            if (isEditing) {
+                const activity = project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes[currentThemeIndex].activities[currentActivityIndex];
+                activity.description = activityDescription;
+                activity.status = activityStatus;
+                
+                updateActivityProgressFromStatus(activity);
+            } else {
+                const newActivity = {
+                    description: activityDescription,
+                    status: activityStatus,
+                    progress: statusToPercentage[activityStatus] || 0,
+                    subactivities: []
+                };
+                project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes[currentThemeIndex].activities.push(newActivity);
+            }
+            
+            renderTitles();
+            saveData();
+            closeModal(activityModal);
+        }
+        
+        function saveSubactivity() {
+            const subactivityDescription = document.getElementById('subactivityDescription').value;
+            const project = getCurrentProject();
+            
+            if (subactivityDescription.trim() === '') {
+                alert('Por favor, ingrese una descripción para la subactividad');
+                return;
+            }
+            
+            const activity = project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes[currentThemeIndex].activities[currentActivityIndex];
+            
+            if (isEditing) {
+                activity.subactivities[currentSubactivityIndex].description = subactivityDescription;
+            } else {
+                activity.subactivities.push({
+                    description: subactivityDescription,
+                    completed: false
+                });
+            }
+            
+            renderTitles();
+            saveData();
+            closeModal(subactivityModal);
+        }
+        
+        function saveObjective() {
+            const objective = document.getElementById('objectiveInput').value;
+            const project = getCurrentProject();
+            project.objective = objective;
+            updateUIFromData();
+            saveData();
+            closeModal(objectiveModal);
+        }
+        
+        function saveText() {
+            const text = document.getElementById('textInput').value;
+            const project = getCurrentProject();
+            
+            switch(currentEditType) {
+                case 'projectTitle':
+                    project.name = text;
+                    // Actualizar también en el selector
+                    const option = projectSelect.querySelector(`option[value="${currentProjectId}"]`);
+                    if (option) {
+                        option.textContent = text;
+                    }
+                    break;
+                case 'projectDescription':
+                    project.description = text;
+                    break;
+                case 'objectiveTitle':
+                    project.objectiveTitle = text;
+                    break;
+                case 'sprintsTitle':
+                    project.sprintsTitle = text;
+                    break;
+            }
+            
+            updateUIFromData();
+            saveData();
+            closeModal(textModal);
+        }
+        
+        function deleteCurrentTitle() {
+            if (confirm('¿Está seguro de que desea eliminar este título y todos sus contenidos?')) {
+                const project = getCurrentProject();
+                project.titles.splice(currentTitleIndex, 1);
+                renderTitles();
+                saveData();
+                closeModal(titleModal);
+            }
+        }
+        
+        function deleteCurrentSubtitle() {
+            if (confirm('¿Está seguro de que desea eliminar este subtítulo y todos sus contenidos?')) {
+                const project = getCurrentProject();
+                project.titles[currentTitleIndex].subtitles.splice(currentSubtitleIndex, 1);
+                renderTitles();
+                saveData();
+                closeModal(subtitleModal);
+            }
+        }
+        
+        function deleteCurrentTheme() {
+            if (confirm('¿Está seguro de que desea eliminar este tema y todas sus actividades?')) {
+                const project = getCurrentProject();
+                project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes.splice(currentThemeIndex, 1);
+                renderTitles();
+                saveData();
+                closeModal(themeModal);
+            }
+        }
+        
+        function deleteCurrentActivity() {
+            if (confirm('¿Está seguro de que desea eliminar esta actividad?')) {
+                const project = getCurrentProject();
+                project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes[currentThemeIndex].activities.splice(currentActivityIndex, 1);
+                renderTitles();
+                saveData();
+                closeModal(activityModal);
+            }
+        }
+        
+        function deleteCurrentSubactivity() {
+            if (confirm('¿Está seguro de que desea eliminar esta subactividad?')) {
+                const project = getCurrentProject();
+                const activity = project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes[currentThemeIndex].activities[currentActivityIndex];
+                activity.subactivities.splice(currentSubactivityIndex, 1);
+                
+                renderTitles();
+                saveData();
+                closeModal(subactivityModal);
+            }
+        }
+        
+async function exportData() {
+    const project = getCurrentProject();
+    
+    // Preparar los datos
+    const jsonData = JSON.stringify(project, null, 2);
+    const blob = new Blob([jsonData], { type: 'application/json' });
+    
+    // Generar nombre con formato solicitado
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const suggestedName = `Novarum_respaldo_(${today}).json`;
+
+    try {
+        // ─── File System Access API (Chrome, Edge, Opera, etc.) ───
+        if ('showSaveFilePicker' in window) {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: suggestedName,
+                types: [{
+                    description: 'Archivo JSON de respaldo',
+                    accept: { 'application/json': ['.json'] },
+                }],
+            });
+            
+            const writable = await handle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            
+            // Opcional: feedback visual
+            alert("¡Respaldo guardado exitosamente como:\n" + suggestedName);
+        }
+        // ─── Fallback clásico (descarga automática) ───
+        else {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = suggestedName;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            // Opcional: feedback
+            alert("Descargando respaldo como:\n" + suggestedName);
+        }
+    } catch (err) {
+        if (err.name === 'AbortError') {
+            console.log("Diálogo de guardado cancelado por el usuario");
+            return;
+        }
+        
+        console.error("Error al guardar:", err);
+        
+        // Fallback de emergencia si falla todo
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = suggestedName;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
+    }
+}
+        
+        function handleImport(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importedData = JSON.parse(event.target.result);
+                    const project = getCurrentProject();
+                    
+                    // Actualizar el proyecto actual con los datos importados
+                    Object.assign(project, importedData);
+                    
+                    renderTitles();
+                    renderMembers();
+                    updateUIFromData();
+                    saveData();
+                    alert('Datos importados correctamente');
+                } catch (error) {
+                    alert('Error al importar los datos. Verifique que el archivo sea válido.');
+                }
+            };
+            
+            reader.readAsText(file);
+            importFile.value = '';
+        }
+        
+        function updateUIFromData() {
+            const project = getCurrentProject();
+            projectTitleElement.textContent = project.name || "Título del Proyecto";
+            projectDescriptionElement.textContent = project.description || "Descripción del proyecto";
+            objectiveTitleElement.textContent = project.objectiveTitle;
+            objectiveTextElement.textContent = project.objective || "Objetivo";
+
+            sprintsTitleElement.textContent = project.sprintsTitle || "Título de Sprints";
+            updatePlaceholders();
+        }
+        
+        // Funciones auxiliares para modales
+        function openModal(modal) {
+            modal.classList.remove('hidden');
+        }
+        
+        function closeModal(modal) {
+            modal.classList.add('hidden');
+        }
+        
+        // Renderizar la estructura completa
+        function renderTitles() {
+            const project = getCurrentProject();
+            titlesContainer.innerHTML = '';
+            
+            if (project.titles.length === 0) {
+                titlesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No se han agregado títulos aún.</p>
+                        <p>Use el botón "Agregar Título" para comenzar.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            project.titles.forEach((title, titleIndex) => {
+                const titleElement = document.createElement('div');
+                titleElement.className = 'title-item';
+                titleElement.ondblclick = (e) => {
+                    e.stopPropagation();
+                    editTitle(titleIndex);
+                };
+                
+                titleElement.innerHTML = `
+                    <div class="title-header">
+                        <div class="title-name">${title.name}</div>
+                        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openAddSubtitleModal(${titleIndex})">+ Subtítulo</button>
+                    </div>
+                    <div class="title-content">
+                        <div class="subtitles-container" id="subtitles-${titleIndex}"></div>
+                    </div>
+                `;
+                
+                titlesContainer.appendChild(titleElement);
+                
+                // Renderizar subtítulos
+                const subtitlesContainer = document.getElementById(`subtitles-${titleIndex}`);
+                
+                if (title.subtitles.length === 0) {
+                    subtitlesContainer.innerHTML = `
+                        <div class="empty-state">
+                            <p>No se han agregado subtítulos para este título.</p>
+                        </div>
+                    `;
+                } else {
+                    title.subtitles.forEach((subtitle, subtitleIndex) => {
+                        const subtitleElement = document.createElement('div');
+                        subtitleElement.className = 'subtitle-item';
+                        subtitleElement.ondblclick = (e) => {
+                            e.stopPropagation();
+                            editSubtitle(titleIndex, subtitleIndex);
+                        };
+                        
+                        subtitleElement.innerHTML = `
+                            <div class="subtitle-header">
+                                <div class="subtitle-name">${subtitle.name}</div>
+                                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openAddThemeModal(${titleIndex}, ${subtitleIndex})">+ Tema</button>
+                            </div>
+                            <div class="subtitle-content">
+                                <div class="themes-container" id="themes-${titleIndex}-${subtitleIndex}"></div>
+                            </div>
+                        `;
+                        
+                        subtitlesContainer.appendChild(subtitleElement);
+                        
+                        // Renderizar temas
+                        const themesContainer = document.getElementById(`themes-${titleIndex}-${subtitleIndex}`);
+                        
+                        if (subtitle.themes.length === 0) {
+                            themesContainer.innerHTML = `
+                                <div class="empty-state">
+                                    <p>No se han agregado temas para este subtítulo.</p>
+                                </div>
+                            `;
+                        } else {
+                            subtitle.themes.forEach((theme, themeIndex) => {
+                                const themeElement = document.createElement('div');
+                                themeElement.className = 'theme-item';
+                                themeElement.ondblclick = (e) => {
+                                    e.stopPropagation();
+                                    editTheme(titleIndex, subtitleIndex, themeIndex);
+                                };
+                                
+                                const themeProgress = calculateThemeProgress(theme.activities);
+                                const dateText = theme.continuous ? 
+                                    "Continuo" : 
+                                    `${formatDate(theme.startDate)} al ${formatDate(theme.endDate)}`;
+                                
+                                // MODIFICACIÓN: En lugar del nombre, mostrar el puesto del responsable
+                                const responsiblePosition = getPositionByName(theme.responsible);
+                                
+                                themeElement.innerHTML = `
+                                    <div class="theme-header">
+                                        <div class="theme-name">${theme.name}</div>
+                                    </div>
+                                    <div class="theme-details">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Responsable</span>
+                                            <span class="detail-value">${responsiblePosition}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Entregable</span>
+                                            <span class="detail-value">${theme.deliverable}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Plazo</span>
+                                            <span class="detail-value">${dateText}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="activities-section">
+                                        <div class="activities-header">
+                                            <h4 class="section-subtitle">Actividades</h4>
+                                            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); openAddActivityModal(${titleIndex}, ${subtitleIndex}, ${themeIndex})">+ Actividad</button>
+                                        </div>
+                                        <div class="activities-list" id="activities-${titleIndex}-${subtitleIndex}-${themeIndex}"></div>
+                                    </div>
+                                    
+                                    <div class="progress-section">
+                                        <div class="progress-header">
+                                            <div class="progress-title">Avance del Tema</div>
+                                            <div class="progress-percentage">${themeProgress}%</div>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: ${themeProgress}%"></div>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                themesContainer.appendChild(themeElement);
+                                
+                                // Renderizar actividades
+                                const activitiesContainer = document.getElementById(`activities-${titleIndex}-${subtitleIndex}-${themeIndex}`);
+                                
+                                if (theme.activities.length === 0) {
+                                    activitiesContainer.innerHTML = `
+                                        <div class="empty-state">
+                                            <p>No se han agregado actividades para este tema.</p>
+                                        </div>
+                                    `;
+                                } else {
+                                    theme.activities.forEach((activity, activityIndex) => {
+                                        const activityElement = document.createElement('div');
+                                        activityElement.className = 'activity-item';
+                                        
+                                        let statusClass = '';
+                                        if (activity.status === 'No iniciado') statusClass = 'status-not-started';
+                                        else if (activity.status === 'En definición') statusClass = 'status-definition';
+                                        else if (activity.status === 'En proceso') statusClass = 'status-in-progress';
+                                        else if (activity.status === 'En revisión') statusClass = 'status-review';
+                                        else if (activity.status === 'Concluido') statusClass = 'status-completed';
+                                        else if (activity.status === 'En pausa') statusClass = 'status-paused';
+                                        
+                                        const activityPercentage = activity.progress !== undefined ? activity.progress : (statusToPercentage[activity.status] || 0);
+                                        const subactivitiesCompleted = activity.subactivities ? 
+                                            activity.subactivities.filter(sa => sa.completed).length : 0;
+                                        const totalSubactivities = activity.subactivities ? activity.subactivities.length : 0;
+                                        
+                                        activityElement.innerHTML = `
+                                            <div class="activity-header" ondblclick="event.stopPropagation(); editActivity(${titleIndex}, ${subtitleIndex}, ${themeIndex}, ${activityIndex})">
+                                                <div class="activity-content">
+                                                    <div class="activity-text">${activity.description}</div>
+                                                    <div class="activity-status">
+                                                        <select class="select-control" onchange="updateActivityStatus(${titleIndex}, ${subtitleIndex}, ${themeIndex}, ${activityIndex}, this.value)">
+                                                            <option value="No iniciado" ${activity.status === 'No iniciado' ? 'selected' : ''}>No iniciado</option>
+                                                            <option value="En definición" ${activity.status === 'En definición' ? 'selected' : ''}>En definición</option>
+                                                            <option value="En proceso" ${activity.status === 'En proceso' ? 'selected' : ''}>En proceso</option>
+                                                            <option value="En revisión" ${activity.status === 'En revisión' ? 'selected' : ''}>En revisión</option>
+                                                            <option value="Concluido" ${activity.status === 'Concluido' ? 'selected' : ''}>Concluido</option>
+                                                            <option value="En pausa" ${activity.status === 'En pausa' ? 'selected' : ''}>En pausa</option>
+                                                        </select>
+                                                        <span>${activityPercentage}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                                        
+                                        // Renderizar subactividades si existen
+                                        if (activity.subactivities && activity.subactivities.length > 0) {
+                                            const subactivitiesContainer = document.createElement('div');
+                                            subactivitiesContainer.className = 'subactivities-container';
+                                            
+                                            activity.subactivities.forEach((subactivity, subactivityIndex) => {
+                                                const subactivityElement = document.createElement('div');
+                                                subactivityElement.className = 'subactivity-item';
+                                                subactivityElement.ondblclick = (e) => {
+                                                    e.stopPropagation();
+                                                    editSubactivity(titleIndex, subtitleIndex, themeIndex, activityIndex, subactivityIndex);
+                                                };
+                                                
+                                                subactivityElement.innerHTML = `
+                                                    <input type="checkbox" class="subactivity-checkbox" ${subactivity.completed ? 'checked' : ''} 
+                                                        onchange="toggleSubactivity(${titleIndex}, ${subtitleIndex}, ${themeIndex}, ${activityIndex}, ${subactivityIndex}, this.checked)">
+                                                    <div class="subactivity-text">${subactivity.description}</div>
+                                                `;
+                                                
+                                                subactivitiesContainer.appendChild(subactivityElement);
+                                            });
+                                            
+                                            // Botón para agregar subactividad
+                                            const addSubactivityBtn = document.createElement('button');
+                                            addSubactivityBtn.className = 'add-subactivity-btn';
+                                            addSubactivityBtn.innerHTML = '<i>+</i> Agregar Subactividad';
+                                            addSubactivityBtn.onclick = (e) => {
+                                                e.stopPropagation();
+                                                openAddSubactivityModal(titleIndex, subtitleIndex, themeIndex, activityIndex);
+                                            };
+                                            
+                                            subactivitiesContainer.appendChild(addSubactivityBtn);
+                                            activityElement.appendChild(subactivitiesContainer);
+                                        } else {
+                                            // Botón para agregar subactividad si no hay ninguna
+                                            const addSubactivityBtn = document.createElement('button');
+                                            addSubactivityBtn.className = 'add-subactivity-btn';
+                                            addSubactivityBtn.innerHTML = '<i>+</i> Agregar Subactividad';
+                                            addSubactivityBtn.style.margin = '10px 14px';
+                                            addSubactivityBtn.onclick = (e) => {
+                                                e.stopPropagation();
+                                                openAddSubactivityModal(titleIndex, subtitleIndex, themeIndex, activityIndex);
+                                            };
+                                            
+                                            activityElement.appendChild(addSubactivityBtn);
+                                        }
+                                        
+                                        activitiesContainer.appendChild(activityElement);
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Funciones de edición por doble clic
+        function editTitle(titleIndex) {
+            isEditing = true;
+            currentTitleIndex = titleIndex;
+            const project = getCurrentProject();
+            document.getElementById('titleModalTitle').textContent = "Editar Título";
+            document.getElementById('titleName').value = project.titles[titleIndex].name;
+            document.getElementById('deleteTitleBtn').style.display = 'inline-block';
+            openModal(titleModal);
+        }
+        
+        function editSubtitle(titleIndex, subtitleIndex) {
+            isEditing = true;
+            currentTitleIndex = titleIndex;
+            currentSubtitleIndex = subtitleIndex;
+            const project = getCurrentProject();
+            document.getElementById('subtitleModalTitle').textContent = "Editar Subtítulo";
+            document.getElementById('subtitleName').value = project.titles[titleIndex].subtitles[subtitleIndex].name;
+            document.getElementById('deleteSubtitleBtn').style.display = 'inline-block';
+            openModal(subtitleModal);
+        }
+        
+        function editTheme(titleIndex, subtitleIndex, themeIndex) {
+            isEditing = true;
+            currentTitleIndex = titleIndex;
+            currentSubtitleIndex = subtitleIndex;
+            currentThemeIndex = themeIndex;
+            const project = getCurrentProject();
+            const theme = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex];
+            document.getElementById('themeModalTitle').textContent = "Editar Tema";
+            document.getElementById('themeName').value = theme.name;
+            document.getElementById('themeResponsible').value = theme.responsible;
+            document.getElementById('themeDeliverable').value = theme.deliverable;
+            document.getElementById('themeStartDate').value = theme.startDate || "";
+            document.getElementById('themeEndDate').value = theme.endDate || "";
+            document.getElementById('continuousDate').checked = theme.continuous || false;
+            document.getElementById('dateRange').style.display = theme.continuous ? 'none' : 'block';
+            document.getElementById('deleteThemeBtn').style.display = 'inline-block';
+            
+            updateResponsibleDropdown();
+            
+            openModal(themeModal);
+        }
+        
+        function editActivity(titleIndex, subtitleIndex, themeIndex, activityIndex) {
+            isEditing = true;
+            currentTitleIndex = titleIndex;
+            currentSubtitleIndex = subtitleIndex;
+            currentThemeIndex = themeIndex;
+            currentActivityIndex = activityIndex;
+            const project = getCurrentProject();
+            const activity = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities[activityIndex];
+            document.getElementById('activityModalTitle').textContent = "Editar Actividad";
+            document.getElementById('activityDescription').value = activity.description;
+            document.getElementById('activityStatus').value = activity.status;
+            document.getElementById('deleteActivityBtn').style.display = 'inline-block';
+            
+            openModal(activityModal);
+        }
+        
+        function editSubactivity(titleIndex, subtitleIndex, themeIndex, activityIndex, subactivityIndex) {
+            isEditing = true;
+            currentTitleIndex = titleIndex;
+            currentSubtitleIndex = subtitleIndex;
+            currentThemeIndex = themeIndex;
+            currentActivityIndex = activityIndex;
+            currentSubactivityIndex = subactivityIndex;
+            const project = getCurrentProject();
+            const subactivity = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities[activityIndex].subactivities[subactivityIndex];
+            document.getElementById('subactivityModalTitle').textContent = "Editar Subactividad";
+            document.getElementById('subactivityDescription').value = subactivity.description;
+            document.getElementById('deleteSubactivityBtn').style.display = 'inline-block';
+            openModal(subactivityModal);
+        }
+        
+        function updateActivityStatus(titleIndex, subtitleIndex, themeIndex, activityIndex, newStatus) {
+            const project = getCurrentProject();
+            const activity = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities[activityIndex];
+            activity.status = newStatus;
+            
+            if (newStatus !== 'En pausa') {
+                activity.progress = statusToPercentage[newStatus];
+            }
+            
+            if (activity.subactivities && activity.subactivities.length > 0) {
+                const allCompleted = activity.subactivities.every(sa => sa.completed);
+                if (allCompleted) {
+                    activity.status = 'Concluido';
+                    activity.progress = 100;
+                }
+            }
+            
+            renderTitles();
+            saveData();
+        }
+        
+        function updateActivityProgressFromStatus(activity = null) {
+            if (!activity && isEditing) {
+                const project = getCurrentProject();
+                activity = project.titles[currentTitleIndex].subtitles[currentSubtitleIndex].themes[currentThemeIndex].activities[currentActivityIndex];
+            }
+            
+            if (activity) {
+                const newStatus = document.getElementById('activityStatus').value;
+                if (newStatus !== 'En pausa') {
+                    activity.progress = statusToPercentage[newStatus];
+                }
+            }
+        }
+        
+        function toggleSubactivity(titleIndex, subtitleIndex, themeIndex, activityIndex, subactivityIndex, completed) {
+            const project = getCurrentProject();
+            const subactivity = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities[activityIndex].subactivities[subactivityIndex];
+            subactivity.completed = completed;
+            
+            const activity = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities[activityIndex];
+            
+            if (activity.subactivities && activity.subactivities.length > 0) {
+                const completedCount = activity.subactivities.filter(sa => sa.completed).length;
+                const totalCount = activity.subactivities.length;
+                activity.progress = Math.round((completedCount / totalCount) * 100);
+                
+                if (completedCount === totalCount) {
+                    activity.status = 'Concluido';
+                    activity.progress = 100;
+                }
+            }
+            
+            renderTitles();
+            saveData();
+        }
+        
+        function deleteSubactivity(titleIndex, subtitleIndex, themeIndex, activityIndex, subactivityIndex) {
+            if (confirm('¿Está seguro de que desea eliminar esta subactividad?')) {
+                const project = getCurrentProject();
+                const activity = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities[activityIndex];
+                activity.subactivities.splice(subactivityIndex, 1);
+                
+                saveData();
+                renderTitles();
+            }
+        }
+        
+        function calculateThemeProgress(activities) {
+            if (activities.length === 0) return 0;
+            
+            let totalPercentage = 0;
+            activities.forEach(activity => {
+                totalPercentage += activity.progress !== undefined ? activity.progress : (statusToPercentage[activity.status] || 0);
+            });
+            
+            return Math.round(totalPercentage / activities.length);
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES');
+        }
+
+        // =============================================
+        // FUNCIONALIDAD DE ARRASTRAR Y SOLTAR
+        // =============================================
+
+        // Función para inicializar la funcionalidad de arrastrar y soltar
+        function initializeDragAndDrop() {
+            // Configuración común para todos los Sortable
+            const sortableConfig = {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                handle: '.drag-handle',
+                onEnd: function(evt) {
+                    updateDataAfterReorder(evt);
+                }
+            };
+
+            // Inicializar arrastrar y soltar para títulos
+            if (titlesContainer.children.length > 0) {
+                new Sortable(titlesContainer, {
+                    ...sortableConfig,
+                    onEnd: function(evt) {
+                        if (evt.oldIndex !== evt.newIndex) {
+                            const project = getCurrentProject();
+                            const movedTitle = project.titles.splice(evt.oldIndex, 1)[0];
+                            project.titles.splice(evt.newIndex, 0, movedTitle);
+                            saveData();
+                        }
+                    }
+                });
+            }
+
+            // Inicializar arrastrar y soltar para subtítulos, temas, actividades y subactividades
+            initializeNestedDragAndDrop();
+            
+            // Inicializar arrastrar y soltar para miembros
+            initializeMembersDragAndDrop();
+        }
+
+        // Función para inicializar arrastrar y soltar anidado
+        function initializeNestedDragAndDrop() {
+            const project = getCurrentProject();
+            
+            // Para cada título, inicializar subtítulos
+            project.titles.forEach((title, titleIndex) => {
+                const subtitlesContainer = document.getElementById(`subtitles-${titleIndex}`);
+                if (subtitlesContainer && subtitlesContainer.children.length > 0) {
+                    new Sortable(subtitlesContainer, {
+                        animation: 150,
+                        ghostClass: 'sortable-ghost',
+                        chosenClass: 'sortable-chosen',
+                        dragClass: 'sortable-drag',
+                        handle: '.drag-handle',
+                        onEnd: function(evt) {
+                            if (evt.oldIndex !== evt.newIndex) {
+                                const project = getCurrentProject();
+                                const movedSubtitle = project.titles[titleIndex].subtitles.splice(evt.oldIndex, 1)[0];
+                                project.titles[titleIndex].subtitles.splice(evt.newIndex, 0, movedSubtitle);
+                                saveData();
+                            }
+                        }
+                    });
+                }
+
+                // Para cada subtítulo, inicializar temas
+                title.subtitles.forEach((subtitle, subtitleIndex) => {
+                    const themesContainer = document.getElementById(`themes-${titleIndex}-${subtitleIndex}`);
+                    if (themesContainer && themesContainer.children.length > 0) {
+                        new Sortable(themesContainer, {
+                            animation: 150,
+                            ghostClass: 'sortable-ghost',
+                            chosenClass: 'sortable-chosen',
+                            dragClass: 'sortable-drag',
+                            handle: '.drag-handle',
+                            onEnd: function(evt) {
+                                if (evt.oldIndex !== evt.newIndex) {
+                                    const project = getCurrentProject();
+                                    const movedTheme = project.titles[titleIndex].subtitles[subtitleIndex].themes.splice(evt.oldIndex, 1)[0];
+                                    project.titles[titleIndex].subtitles[subtitleIndex].themes.splice(evt.newIndex, 0, movedTheme);
+                                    saveData();
+                                }
+                            }
+                        });
+                    }
+
+                    // Para cada tema, inicializar actividades
+                    subtitle.themes.forEach((theme, themeIndex) => {
+                        const activitiesContainer = document.getElementById(`activities-${titleIndex}-${subtitleIndex}-${themeIndex}`);
+                        if (activitiesContainer && activitiesContainer.children.length > 0) {
+                            new Sortable(activitiesContainer, {
+                                animation: 150,
+                                ghostClass: 'sortable-ghost',
+                                chosenClass: 'sortable-chosen',
+                                dragClass: 'sortable-drag',
+                                handle: '.drag-handle',
+                                onEnd: function(evt) {
+                                    if (evt.oldIndex !== evt.newIndex) {
+                                        const project = getCurrentProject();
+                                        const movedActivity = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities.splice(evt.oldIndex, 1)[0];
+                                        project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities.splice(evt.newIndex, 0, movedActivity);
+                                        saveData();
+                                    }
+                                }
+                            });
+                        }
+
+                        // Para cada actividad, inicializar subactividades
+                        theme.activities.forEach((activity, activityIndex) => {
+                            const activityElement = document.querySelector(`#activities-${titleIndex}-${subtitleIndex}-${themeIndex} .activity-item:nth-child(${activityIndex + 1})`);
+                            if (activityElement) {
+                                const subactivitiesContainer = activityElement.querySelector('.subactivities-container');
+                                if (subactivitiesContainer && subactivitiesContainer.children.length > 1) { // Más de 1 porque incluye el botón de agregar
+                                    new Sortable(subactivitiesContainer, {
+                                        animation: 150,
+                                        ghostClass: 'sortable-ghost',
+                                        chosenClass: 'sortable-chosen',
+                                        dragClass: 'sortable-drag',
+                                        handle: '.drag-handle',
+                                        filter: '.add-subactivity-btn', // Excluir el botón de agregar
+                                        onEnd: function(evt) {
+                                            if (evt.oldIndex !== evt.newIndex) {
+                                                const project = getCurrentProject();
+                                                const movedSubactivity = project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities[activityIndex].subactivities.splice(evt.oldIndex, 1)[0];
+                                                project.titles[titleIndex].subtitles[subtitleIndex].themes[themeIndex].activities[activityIndex].subactivities.splice(evt.newIndex, 0, movedSubactivity);
+                                                saveData();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    });
+                });
+            });
+        }
+
+        // Función para inicializar arrastrar y soltar para miembros
+        function initializeMembersDragAndDrop() {
+            if (membersList.children.length > 0) {
+                new Sortable(membersList, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    chosenClass: 'sortable-chosen',
+                    dragClass: 'sortable-drag',
+                    handle: '.drag-handle',
+                    onEnd: function(evt) {
+                        if (evt.oldIndex !== evt.newIndex) {
+                            const project = getCurrentProject();
+                            const movedMember = project.members.splice(evt.oldIndex, 1)[0];
+                            project.members.splice(evt.newIndex, 0, movedMember);
+                            saveData();
+                        }
+                    }
+                });
+            }
+        }
+
+        // Función para actualizar la interfaz después de renderizar
+        function updateUIAfterRender() {
+            addDragHandles();
+            initializeDragAndDrop();
+        }
+
+        // Función para agregar manijas de arrastre a los elementos
+        function addDragHandles() {
+            // Agregar manijas de arrastre a todos los elementos arrastrables
+            document.querySelectorAll('.title-item, .subtitle-item, .theme-item, .activity-item, .subactivity-item, .member-item').forEach(item => {
+                if (!item.querySelector('.drag-handle')) {
+                    const dragHandle = document.createElement('span');
+                    dragHandle.className = 'drag-handle';
+                    dragHandle.innerHTML = '⋮⋮';
+                    dragHandle.style.cssText = 'cursor: grab; margin-right: 10px; color: #95a5a6; font-weight: bold; user-select: none;';
+                    
+                    // Insertar la manija al inicio del elemento
+                    if (item.querySelector('.title-header, .subtitle-header, .theme-header, .activity-header')) {
+                        const header = item.querySelector('.title-header, .subtitle-header, .theme-header, .activity-header');
+                        header.insertBefore(dragHandle, header.firstChild);
+                    } else {
+                        item.insertBefore(dragHandle, item.firstChild);
+                    }
+                }
+            });
+        }
+
+        // Modificar la función renderTitles para llamar a updateUIAfterRender
+        const originalRenderTitles = renderTitles;
+        renderTitles = function() {
+            originalRenderTitles();
+            setTimeout(updateUIAfterRender, 0);
+            updateQuickAccessIndex();
+        };
+
+        // Modificar la función renderMembers para agregar funcionalidad de arrastrar y soltar
+        const originalRenderMembers = renderMembers;
+        renderMembers = function() {
+            originalRenderMembers();
+            setTimeout(updateUIAfterRender, 0);
+            updateQuickAccessIndex();
+        };
+
+        // Función auxiliar para actualizar datos después de reordenar
+        function updateDataAfterReorder(evt) {
+            // Esta función se llama desde los eventos onEnd de Sortable
+            // Los datos ya se actualizan en cada evento específico
+        }
+    </script>
+
+<div style="text-align:left; font-size:.85rem; background: linear-gradient(to right, #22d3ee, #06b6d4); -webkit-background-clip: text; background-clip: text; color: transparent; position:fixed; bottom:0px; width:100%; z-index:101; margin-top:10px; font-family: 'Garamond', serif;">
+  By Pablo Ojeda
+</div>
+
+<script>
+(() => {
+  const btn = document.getElementById('fullscreenBtn');
+  const icon = document.getElementById('fullscreenIcon');
+
+  if (!btn) return;
+
+  const isFullscreen = () =>
+    document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+
+  const enterFullscreen = () => {
+    const el = document.documentElement;
+
+    // OJO: navigationUI puede ser ignorado por algunos navegadores
+    if (el.requestFullscreen) return el.requestFullscreen({ navigationUI: "hide" });
+    if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen(); // Safari
+    if (el.msRequestFullscreen) return el.msRequestFullscreen(); // IE/Edge viejo
+
+    throw new Error("Fullscreen API no soportada");
+  };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) return document.exitFullscreen();
+    if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+    if (document.msExitFullscreen) return document.msExitFullscreen();
+  };
+
+  const syncIcon = () => {
+    icon.textContent = isFullscreen() ? "✕" : "⛶";
+  };
+
+  // IMPORTANTE: no uses setTimeout aquí, debe ser directo en el click
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    try {
+      if (!isFullscreen()) {
+        enterFullscreen();
+      } else {
+        exitFullscreen();
+      }
+    } catch (err) {
+      console.warn(err);
+      alert("El navegador bloqueó la pantalla completa (puede ser por permisos o por el contenedor donde corre la app).");
+    }
+  });
+
+  document.addEventListener("fullscreenchange", syncIcon);
+  document.addEventListener("webkitfullscreenchange", syncIcon);
+  syncIcon();
+})();
+</script>
+
+</body>
+</html>
